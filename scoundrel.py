@@ -1,17 +1,16 @@
 import tkinter as tk
+
 from action import Action
 from combat import Combat
 
 
 class Plugin:
     def __init__(self):
-        print("Hal: init")
         self.in_combat = False
         self.free = True
         self.action = Action.nothing
         self.queue = []
-        self.combat = Combat(self.hal_print, self.add_action, self.remove_action, self.queue, self.free,
-                             self.action)
+        self.combat = Combat(self.scoundrel_print, self.add_action, self.remove_action, self.queue, self.free, self.action)
         self.combat_enabled = tk.BooleanVar()
 
     def set_send_command(self, send_command):
@@ -29,10 +28,10 @@ class Plugin:
             self.free = True
             # self.perform_action()
         elif ("] A" in line or "] An" in line) and "You retrieve the line" not in line:
-            self.hal_print("Combat")
+            self.scoundrel_print("Combat")
             self.in_combat = True
         elif "retreat" in line and "You retreat." not in line and "retreat first" not in line and "retreats." not in line:
-            self.hal_print("Retreating")
+            self.scoundrel_print("Retreating")
             self.add_action(Action.retreat)
 
     def add_action(self, action):
@@ -46,7 +45,7 @@ class Plugin:
             self.queue.sort()
 
     def draw(self, plugin_area):
-        label_frame = tk.LabelFrame(plugin_area, text="Hal")
+        label_frame = tk.LabelFrame(plugin_area, text="Scoundrel")
         label_frame.grid(row=0, column=0, sticky=tk.N)
         self.draw_toggles(label_frame)
         self.draw_text(label_frame)
@@ -59,22 +58,22 @@ class Plugin:
     def draw_text(self, label_frame):
         scrollbar = tk.Scrollbar(label_frame)
         scrollbar.grid(row=1, column=1, sticky=tk.N + tk.S)
-        self.hal_output = tk.Text(
+        self.scoundrel_output = tk.Text(
             label_frame,
             state=tk.DISABLED,
-            name="hal_output",
+            name="scoundrel_output",
             yscrollcommand=scrollbar.set,
             wrap=tk.WORD
         )
-        scrollbar.config(command=self.hal_output.yview)
-        self.hal_output.scrollbar = scrollbar
-        self.hal_output.grid(row=1, column=0, sticky=tk.N + tk.W)
+        scrollbar.config(command=self.scoundrel_output.yview)
+        self.scoundrel_output.scrollbar = scrollbar
+        self.scoundrel_output.grid(row=1, column=0, sticky=tk.N + tk.W)
 
     def scroll_output(self):
-        self.hal_output.see(tk.END)
+        self.scoundrel_output.see(tk.END)
 
-    def hal_print(self, line):
-        self.hal_output.insert(tk.END, line + "\n", None)
+    def scoundrel_print(self, line):
+        self.scoundrel_output.insert(tk.END, line + "\n", None)
         self.scroll_output()
 
     def perform_action(self):
