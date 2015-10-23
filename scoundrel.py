@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from action import Action
+from alert.alert import Alert
 from combat import Combat
 
 
@@ -10,8 +11,11 @@ class Plugin:
         self.free = True
         self.action = Action.nothing
         self.queue = []
-        self.combat = Combat(self.scoundrel_print, self.add_action, self.remove_action, self.queue, self.free, self.action)
+        self.combat = Combat(self.scoundrel_print, self.add_action, self.remove_action, self.queue, self.free,
+                             self.action)
         self.combat_enabled = tk.BooleanVar()
+        self.alert = Alert(self.scoundrel_print)
+        self.alert_enabled = tk.BooleanVar()
 
     def set_send_command(self, send_command):
         self.send_command = send_command
@@ -27,7 +31,7 @@ class Plugin:
         elif "You are no longer busy" in line:
             self.free = True
             # self.perform_action()
-        elif ("] A" in line or "] An" in line) and "You retrieve the line" not in line:
+        elif ("] A" in line) and "You retrieve the line" not in line:
             self.scoundrel_print("Combat")
             self.in_combat = True
         elif "retreat" in line and "You retreat." not in line and "retreat first" not in line and "retreats." not in line:
@@ -46,28 +50,30 @@ class Plugin:
 
     def draw(self, plugin_area):
         label_frame = tk.LabelFrame(plugin_area, text="Scoundrel")
-        label_frame.grid(row=0, column=0, sticky=tk.N)
+        label_frame.grid(row=0, column=0, sticky=tk.N + tk.W + tk.S)
         self.draw_toggles(label_frame)
         self.draw_text(label_frame)
 
     def draw_toggles(self, label_frame):
         combat_toggle = tk.Checkbutton(label_frame, text="Combat", variable=self.combat_enabled,
-                                       command=self.combat.perform_action)
+                                       command=lambda enabled=self.combat_enabled: self.combat.toggle(enabled))
         combat_toggle.grid(row=0, column=0, sticky=tk.N)
+        alert_toggle = tk.Checkbutton(label_frame, text="Alert", variable=self.alert_enabled,
+                                      command=lambda enabled=self.alert_enabled: self.alert.toggle(enabled))
+        alert_toggle.grid(row=0, column=3, sticky=tk.N)
 
     def draw_text(self, label_frame):
         scrollbar = tk.Scrollbar(label_frame)
-        scrollbar.grid(row=1, column=1, sticky=tk.N + tk.S)
+        scrollbar.grid(row=1, column=4, sticky=tk.N + tk.S)
         self.scoundrel_output = tk.Text(
             label_frame,
-            state=tk.DISABLED,
             name="scoundrel_output",
             yscrollcommand=scrollbar.set,
             wrap=tk.WORD
         )
         scrollbar.config(command=self.scoundrel_output.yview)
         self.scoundrel_output.scrollbar = scrollbar
-        self.scoundrel_output.grid(row=1, column=0, sticky=tk.N + tk.W)
+        self.scoundrel_output.grid(row=1, column=0, columnspan=5, sticky=tk.N + tk.W + tk.S)
 
     def scroll_output(self):
         self.scoundrel_output.see(tk.END)

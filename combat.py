@@ -8,14 +8,14 @@ from action import Action
 
 
 class Combat:
-    def __init__(self, hal_print, add_action, remove_action, queue, free, action):
+    def __init__(self, scoundrel_print, add_action, remove_action, queue, free, action):
         with open(os.path.dirname(__file__) + '/settings.json', 'r') as f:
             self.settings = json.load(f)
 
         self.rotation = self.settings['rotation']
         self.weapon = self.settings['weapon']
         self.retreat = False
-        self.hal_print = hal_print
+        self.scoundrel_print = scoundrel_print
         self.add_action = add_action
         self.remove_action = remove_action
         self.queue = queue
@@ -29,6 +29,9 @@ class Combat:
 
     def set_echo(self, echo):
         self.echo = echo
+
+    def combat_print(self, text):
+        self.scoundrel_print("[C] "+text)
 
     def recover(self):
         self.send_cmd("get " + self.weapon)
@@ -80,7 +83,7 @@ class Combat:
             self.perform_action()
         elif "expires." in line:
             self.remove_action(Action.kill)
-            self.hal_print("Dead")
+            self.combat_print("Dead")
             self.in_combat = False
         elif "falls unconscious" in line:
             self.remove_action(Action.attack)
@@ -103,12 +106,12 @@ class Combat:
                 self.add_action(Action.attack)
                 me = False
                 if self.free:
-                    self.hal_print("Free, attacking")
+                    self.combat_print("Free, attacking")
                     self.perform_action()
             elif "You slit" in line:
                 target = self.killPattern.search(line)
                 if target:
-                    self.hal_print(str(datetime.datetime.now())[:-7] + " Killed " + target.group(1))
+                    self.combat_print(str(datetime.datetime.now())[:-7] + " Killed " + target.group(1))
                 self.remove_action(Action.kill)
                 self.in_combat = False
             roll = self.rollPattern.search(line)
@@ -117,3 +120,8 @@ class Combat:
 
     def send_cmd(self, cmd):
         self.send_command(cmd + "\n")
+
+    def toggle(self, enabled):
+        self.combat_print(str(datetime.datetime.now())[:-7] + (" Enabled" if enabled.get() else " Disabled"))
+        self.add_action(Action.attack)
+        self.perform_action()

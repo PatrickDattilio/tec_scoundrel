@@ -1,24 +1,27 @@
-from tkinter import LabelFrame, N, BooleanVar, Checkbutton
+import datetime
 
 
-class Plugin:
-    def __init__(self):
-        self.alert_enabled = BooleanVar()
+class Alert:
+    def __init__(self, scoundrel_print):
+        self.scoundrel_print = scoundrel_print
+        self.tag = "[A] "
 
     def fatigue_update(self, value):
         if value <= 0:
+            self.alert_print("Exhausted!")
             self.bell()
 
-    def draw(self, plugin_area):
-        label_frame = LabelFrame(plugin_area, text="Alerts")
-        label_frame.grid(row=0, column=0, sticky=N)
-
-        self.draw_toggles(label_frame)
-        self.draw_text(label_frame)
-
-    def draw_toggles(self, label_frame):
-        combat_toggle = Checkbutton(label_frame, text="Alert", variable=self.alert_enabled, command=self.bell)
-        combat_toggle.grid(row=0, column=0, sticky=N)
+    def process_line(self, line):
+        if "to you" in line:
+            self.bell()
+        elif "walks in" in line:
+            self.bell()
 
     def bell(self):
         print('\a')
+
+    def alert_print(self, text):
+        self.scoundrel_print(self.tag + text)
+
+    def toggle(self, enabled):
+        self.alert_print(str(datetime.datetime.now())[:-7] + (" Enabled" if enabled.get() else " Disabled"))
