@@ -111,7 +111,7 @@ class Combat:
             elif "You slit" in line:
                 target = self.killPattern.search(line)
                 if target:
-                    self.combat_print(str(datetime.datetime.now())[:-7] + " Killed " + target.group(1))
+                    self.combat_print(str(datetime.datetime.now())[11:-7] + " Killed " + target.group(1))
                 self.remove_action(Action.kill)
                 self.in_combat = False
             roll = self.rollPattern.search(line)
@@ -122,6 +122,6 @@ class Combat:
         self.send_command(cmd + "\n")
 
     def toggle(self, enabled):
-        self.combat_print(str(datetime.datetime.now())[:-7] + (" Enabled" if enabled.get() else " Disabled"))
+        self.combat_print(str(datetime.datetime.now())[11:-7] + (" Enabled" if enabled.get() else " Disabled"))
         self.add_action(Action.attack)
         self.perform_action()

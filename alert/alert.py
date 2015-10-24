@@ -7,11 +7,12 @@ class Alert:
         self.tag = "[A] "
 
     def fatigue_update(self, value):
-        if value <= 0:
+        self.alert_print("Fatigue: "+value)
+        if int(value) <= 0:
             self.alert_print("Exhausted!")
             self.bell()
 
-    def process_line(self, line):
+    def post_process(self, line):
         if "to you" in line:
             self.bell()
         elif "walks in" in line:
@@ -24,4 +25,4 @@ class Alert:
         self.scoundrel_print(self.tag + text)
 
     def toggle(self, enabled):
-        self.alert_print(str(datetime.datetime.now())[:-7] + (" Enabled" if enabled.get() else " Disabled"))
+        self.alert_print(str(datetime.datetime.now())[11:-7] + (" Enabled" if enabled.get() else " Disabled"))
