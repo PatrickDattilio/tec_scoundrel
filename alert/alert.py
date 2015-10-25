@@ -1,13 +1,16 @@
 import datetime
 
+import pyglet
+
 
 class Alert:
     def __init__(self, scoundrel_print):
         self.scoundrel_print = scoundrel_print
         self.tag = "[A] "
+        self.beep = pyglet.media.load('chime.wav', streaming=False)
 
     def fatigue_update(self, value):
-        self.alert_print("Fatigue: "+value)
+        self.alert_print("Fatigue: " + value)
         if int(value) <= 0:
             self.alert_print("Exhausted!")
             self.bell()
@@ -19,10 +22,11 @@ class Alert:
             self.bell()
 
     def bell(self):
-        print('\a')
+        self.beep.play()
 
     def alert_print(self, text):
         self.scoundrel_print(self.tag + text)
 
     def toggle(self, enabled):
         self.alert_print(str(datetime.datetime.now())[11:-7] + (" Enabled" if enabled.get() else " Disabled"))
+        self.bell()

@@ -1,2 +1,2 @@
 import alert
-alert.Plugin().fatigue_update(0)
+alert.Alert(print).fatigue_update('0')
