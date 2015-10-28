@@ -25,7 +25,14 @@ class Plugin:
         self.echo = echo
         self.combat.set_echo(echo)
 
+    def fatigue_update(self, value):
+        if self.alert_enabled.get():
+            self.alert.fatigue_update(value)
+
     def post_process(self, line):
+        if self.alert_enabled.get():
+            self.alert.post_process(line)
+
         if self.in_combat and self.combat_enabled.get():
             self.combat.handle_combat_line(line)
         elif "You are no longer busy" in line:
