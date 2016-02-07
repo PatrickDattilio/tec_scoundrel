@@ -1,7 +1,7 @@
 import datetime
 import os
 
-import pyglet
+import pyglet.media
 
 
 class Alert:
