@@ -1,15 +1,17 @@
 import datetime
 import os
 
-import pyglet.media
+import pyglet
 
 
 class Alert:
     def __init__(self, scoundrel_print):
         self.scoundrel_print = scoundrel_print
         self.tag = "[A] "
-        self.beep = pyglet.media.load(os.path.dirname(os.path.realpath("__file__"))+'/plugins/tec_scoundrel/alert/chime.wav', streaming=False)
-        self.enemies = ["plump brown", "pale white rat", "sickly yellow rat", "gaunt grey rat", "mottled wiry rat"]
+        self.beep = pyglet.media.load(
+            os.path.dirname(os.path.realpath("__file__")) + '/plugins/tec_scoundrel/alert/chime.wav', streaming=False)
+        self.enemies = ["plump brown", "pale white rat", "sickly yellow rat", "gaunt grey rat", "mottled wiry rat",
+                        "grimy rat"]
 
     def fatigue_update(self, value):
         self.alert_print("Fatigue: " + value)
@@ -25,8 +27,10 @@ class Alert:
                 break
         if not skip:
             if "to you" in line:
+                self.alert_print("To You: " + line)
                 self.bell()
             elif "walks in" in line:
+                self.alert_print("Incoming: " + line)
                 self.bell()
 
     def bell(self):
