@@ -4,7 +4,8 @@ import random
 import time
 import json
 import re
-from action import Action
+
+from combat.action import Action
 
 
 class Combat:

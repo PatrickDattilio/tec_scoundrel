@@ -11,7 +11,7 @@ class Alert:
         self.beep = pyglet.media.load(
             os.path.dirname(os.path.realpath("__file__")) + '/plugins/tec_scoundrel/alert/chime.wav', streaming=False)
         self.enemies = ["plump brown", "pale white rat", "sickly yellow rat", "gaunt grey rat", "mottled wiry rat",
-                        "grimy rat"]
+                        "grimy rat", "mangy looking rat", "filth-covered rat", "ragged looking rat"]
 
     def fatigue_update(self, value):
         self.alert_print("Fatigue: " + value)
@@ -31,6 +31,9 @@ class Alert:
                 self.bell()
             elif "walks in" in line:
                 self.alert_print("Incoming: " + line)
+                self.bell()
+            elif ("say" in line or "whisper" in line) and "thinks aloud:" not in line:
+                self.alert_print("Communication: " + line)
                 self.bell()
 
     def bell(self):

@@ -1,6 +1,8 @@
 import tkinter as tk
 
-from action import Action
+from chat.chat import Chat
+
+from combat.action import Action
 from alert.alert import Alert
 from combat import Combat
 
@@ -15,6 +17,7 @@ class Plugin:
                              self.action)
         self.combat_enabled = tk.BooleanVar()
         self.alert = Alert(self.scoundrel_print)
+        self.chat = Chat(self.scoundrel_print_with_tag)
         self.alert_enabled = tk.BooleanVar()
 
     def set_send_command(self, send_command):
@@ -78,6 +81,7 @@ class Plugin:
             yscrollcommand=scrollbar.set,
             wrap=tk.WORD
         )
+        self.scoundrel_output.tag_configure('think', fill='blue')
         scrollbar.config(command=self.scoundrel_output.yview)
         self.scoundrel_output.scrollbar = scrollbar
         self.scoundrel_output.grid(row=1, column=0, columnspan=5, sticky=tk.N + tk.W + tk.S)
@@ -86,7 +90,10 @@ class Plugin:
         self.scoundrel_output.see(tk.END)
 
     def scoundrel_print(self, line):
-        self.scoundrel_output.insert(tk.END, line + "\n", None)
+        self.scoundrel_print_with_tag(line, None)
+
+    def scoundrel_print_with_tag(self, line, tag):
+        self.scoundrel_output.insert(tk.END, line + "\n", tag)
         self.scroll_output()
 
     def perform_action(self):
